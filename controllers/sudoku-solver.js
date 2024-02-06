@@ -1,9 +1,13 @@
 class SudokuSolver {
+    constructor() {
+        let board;
+    }
 
 
     validate(puzzleString) {
 
         if(!puzzleString) {
+            console.log("validate sees puzzleString as..... ", puzzleString);
             return "Required field missing";
         }
 
@@ -51,8 +55,8 @@ class SudokuSolver {
             let board = this.transformTogrid(board);
         }
 
-        boxRow = Math.floor(row / 3) * 3;
-        boxCol = Math.floor(column / 3) * 3;
+        let boxRow = Math.floor(row / 3) * 3;
+        let boxCol = Math.floor(column / 3) * 3;
     
         for (var r = 0; r < 3; r++) {
             for (var c = 0; c < 3; c++) {
@@ -68,16 +72,16 @@ class SudokuSolver {
         
         const grid = [];
         
-        for (i = 1; i < 10 ; i++) {
+        for (let i = 0; i < 9 ; i++) {
             grid.push([]);
 
-            for(j = 1; j < 10; j++) {
+            for(let j = 0; j < 9; j++) {
                 let puzzleStringIndex = (i * 9) + j;
 
                 if(puzzleString[puzzleStringIndex] == ".") {
                     grid[i][j] = 0;
                 } else {
-                    grid[i][j] = Number(puzzelString[puzzleStringIndex]);
+                    grid[i][j] = Number(puzzleString[puzzleStringIndex]);
                 }
             }
         };
@@ -85,7 +89,28 @@ class SudokuSolver {
         return grid;
     }
 
-    solve(board) {
+    // check if value passes all checks
+    checkValue(board, row, column, value) {
+        if(this.checkRowPlacement(board, row, value) &&
+          this.checkColPlacement(board, column, value) &&
+          this.checkSquarePlacement(board, row, column, value)) {
+            return true;
+        }
+        
+        return false; 
+    }
+
+    solve(puzzleString) {
+        
+        //for the first time in the recursion
+        if (!Array.isArray(puzzleString)) {
+            if (this.validate(puzzleString) !== "Valid") {
+                return this.validate(puzzleString);
+            }
+
+            let board = this.board = this.transformTogrid(puzzleString);
+        }
+
         // find Empty cell to fill
         function nextEmptySpot(board) {
             for (var i = 0; i < 9; i++) {
@@ -94,45 +119,37 @@ class SudokuSolver {
                         return [i, j];
                 }
             }
+
             return [-1, -1];
         }
 
-        // check if value passes all checks
-        function checkValue(board, row, column, value) {
-
-
-            if(checkRow(board, row, value) &&
-              checkColumn(board, column, value) &&
-              checkSquare(board, row, column, value)) {
-                return true;
-            }
-            
-            return false; 
-        };
-
-          
-        let emptySpot = nextEmptySpot(board);
+        let emptySpot = nextEmptySpot(this.board);
         let row = emptySpot[0];
         let col = emptySpot[1];
-    
+        
         // there is no more empty spots
         if (row === -1){
             console.log("there is no empty spots");
-            return board;
+            return this.board;
         }
     
-        for(let num = 1; num<=9; num++){
-            if (checkValue(board, row, col, num)){
-                board[row][col] = num;
-                solve(board);
+        for(let num = 1; num<=9; num++) {
+            console.log("try.............  ", num);
+            if (this.checkValue(this.board, row, col, num)) {
+                this.board[row][col] = num;
+                console.log(`fill coordinates (${row}, ${col}) with ${num}`);
+                this.solve(this.board);
+                
+                console.log("finished recursion");
             }
         }
     
-        if (nextEmptySpot(board)[0] !== -1)
-            board[row][col] = 0;
+        if (nextEmptySpot(this.board)[0] !== -1)
+            this.board[row][col] = 0;
     
+        
 
-        return board;
+        return this.board;
 
     }
 }
