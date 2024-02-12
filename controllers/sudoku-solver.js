@@ -12,6 +12,7 @@ class SudokuSolver {
         }
 
         if(puzzleString.length != 81) {
+            console.log("length of puzzleString is ..........", puzzleString.length);
             return "Expected puzzle to be 81 characters long";
         }
 
@@ -27,7 +28,7 @@ class SudokuSolver {
             let board = this.transformTogrid(board);
         }
         
-        for(var i = 0; i < board[row].length; i++) {
+        for(let i = 0; i < board[row].length; i++) {
             if(board[row][i] === value) {
                 return false;
             }
@@ -41,7 +42,7 @@ class SudokuSolver {
             let board = this.transformTogrid(board);
         }
 
-        for(var i = 0; i < board.length; i++) {
+        for(let i = 0; i < board.length; i++) {
             if(board[i][column] === value) {
                 return false;
             }
@@ -57,9 +58,11 @@ class SudokuSolver {
 
         let boxRow = Math.floor(row / 3) * 3;
         let boxCol = Math.floor(column / 3) * 3;
+
+        console.log("boxRow... ", boxRow, ", boxCol.... ", boxCol);
     
-        for (var r = 0; r < 3; r++) {
-            for (var c = 0; c < 3; c++) {
+        for (let r = 0; r < 3; r++) {
+            for (let c = 0; c < 3; c++) {
                 if (board[boxRow + r][boxCol + c] === value) 
                     return false;
             }
@@ -113,8 +116,8 @@ class SudokuSolver {
 
         // find Empty cell to fill
         function nextEmptySpot(board) {
-            for (var i = 0; i < 9; i++) {
-                for (var j = 0; j < 9; j++) {
+            for (let i = 0; i < 9; i++) {
+                for (let j = 0; j < 9; j++) {
                     if (board[i][j] === 0) 
                         return [i, j];
                 }
@@ -134,13 +137,9 @@ class SudokuSolver {
         }
     
         for(let num = 1; num<=9; num++) {
-            console.log("try.............  ", num);
             if (this.checkValue(this.board, row, col, num)) {
                 this.board[row][col] = num;
-                console.log(`fill coordinates (${row}, ${col}) with ${num}`);
                 this.solve(this.board);
-                
-                console.log("finished recursion");
             }
         }
     
