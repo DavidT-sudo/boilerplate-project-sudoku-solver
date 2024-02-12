@@ -25,7 +25,7 @@ class SudokuSolver {
 
     checkRowPlacement(board, row, value) { 
         if(!Array.isArray(board)) {
-            let board = this.transformTogrid(board);
+            board = this.transformTogrid(board);
         }
         
         for(let i = 0; i < board[row].length; i++) {
@@ -39,7 +39,7 @@ class SudokuSolver {
 
     checkColPlacement(board, column, value) {
         if(!Array.isArray(board)) {
-            let board = this.transformTogrid(board);
+            board = this.transformTogrid(board);
         }
 
         for(let i = 0; i < board.length; i++) {
@@ -53,13 +53,11 @@ class SudokuSolver {
 
     checkSquarePlacement(board, row, column, value) {
         if(!Array.isArray(board)) {
-            let board = this.transformTogrid(board);
+            board = this.transformTogrid(board);
         }
 
         let boxRow = Math.floor(row / 3) * 3;
         let boxCol = Math.floor(column / 3) * 3;
-
-        console.log("boxRow... ", boxRow, ", boxCol.... ", boxCol);
     
         for (let r = 0; r < 3; r++) {
             for (let c = 0; c < 3; c++) {
@@ -79,7 +77,7 @@ class SudokuSolver {
             grid.push([]);
 
             for(let j = 0; j < 9; j++) {
-                let puzzleStringIndex = (i * 9) + j;
+                let puzzleStringIndex = Number((i * 9) + j);
 
                 if(puzzleString[puzzleStringIndex] == ".") {
                     grid[i][j] = 0;
