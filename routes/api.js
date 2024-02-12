@@ -8,7 +8,7 @@ module.exports = function (app) {
 
   app.route('/api/check')
     .post((req, res) => {
-        console.log(req.body);
+        
         let {coordinate, value} = req.body;
         let puzzleString = req.body.puzzle;
 
@@ -91,15 +91,27 @@ module.exports = function (app) {
   app.route('/api/solve')
     .post((req, res) => {
         let puzzleString = req.body.puzzle;
-        let solution = solver.solve(puzzleString);
+        let result = solver.solve(puzzleString);
 
-        if(!Array.isArray(solution)) {
+        if(!result) {
+            res.json({error: "Puzzle cannot be  solved"});
+            return;
+        }
+
+        if(!Array.isArray(result)) {
             console.log("puzzle could not be solved");
-            console.log(solution);
-            res.json({error: "Puzzle could not be solved"});
+
+            console.log(result);
+            res.json({error: result});
 
         } else {
-            let solutionStr = solution.flat().join("");
+            let solutionStr = result.flat().join("");
+
+            if(/0/.test(solutionStr)) {
+                res.json({error: "Puzzle cannot be solved"});
+                return;
+            }
+
             res.json({solution: solutionStr});
 
         }

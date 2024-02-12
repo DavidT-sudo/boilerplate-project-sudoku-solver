@@ -102,14 +102,17 @@ class SudokuSolver {
     }
 
     solve(puzzleString) {
-        
+
         //for the first time in the recursion
         if (!Array.isArray(puzzleString)) {
+
+            //validate the puzzleString
             if (this.validate(puzzleString) !== "Valid") {
                 return this.validate(puzzleString);
-            }
+            }   
 
             let board = this.board = this.transformTogrid(puzzleString);
+
         }
 
         // find Empty cell to fill
