@@ -21,10 +21,10 @@ module.exports = function (app) {
         let row = coordinate.split("")[0];
         let col = coordinate.split("")[1];
 
-        if(coordinate.length !== 2 || /[^a-i]/i.test(row) || /[^1-9]/i.test(col) ) {
+        if(coordinate.length !== 2 || /[^a-i]/ig.test(row) || /[^1-9]/ig.test(col) ) {
             console.log("coordinate.length....", coordinate.length, "row.....", row, "column.....", col);
             console.log("invalid coordinate");
-            res.json({error: "Invalid coordinate"})
+            res.json({error: "Invalid coordinate"});
             return;
         }
 
@@ -58,15 +58,19 @@ module.exports = function (app) {
 
         let zRow = objMap[row.toLowerCase()];
         let zCol = col - 1;
+        value = Number(value);
 
-        console.log(`coordinate in zero-index (${zRow}, ${zCol})`);
+        if(board[zRow][zCol] === value) {
+            res.json({valid: true});
+            return;
+        }
 
         let rowIsValid = solver.checkRowPlacement(board, zRow, value);
         let colIsValid = solver.checkColPlacement(board, zCol, value);
         let regionIsValid = solver.checkSquarePlacement(board, zRow, zCol, value);
         let conflict = [];
 
-        if(rowIsValid && colIsValid && regionIsValid) {
+        if(rowIsValid == true && colIsValid == true && regionIsValid == true) {
             console.log(".....", rowIsValid, colIsValid, regionIsValid, "......");
             res.json({valid: true});
             return;
@@ -83,8 +87,16 @@ module.exports = function (app) {
         if(!regionIsValid) {
             conflict.push("region");
         }
+        
+        let conflictObj = {
+            valid: false,
+            conflict
+        };
 
-        res.json({valid: false, conflict});
+        console.log("response from /api/check..........");
+        console.log(conflictObj);
+
+        res.json(conflictObj);
 
     });
     
@@ -93,15 +105,17 @@ module.exports = function (app) {
         let puzzleString = req.body.puzzle;
         let result = solver.solve(puzzleString);
 
+        if(!puzzleString) {
+            res.json({ error: 'Required field missing' });
+            return;
+        }
+
         if(!result) {
             res.json({error: "Puzzle cannot be  solved"});
             return;
         }
 
         if(!Array.isArray(result)) {
-            console.log("puzzle could not be solved");
-
-            console.log(result);
             res.json({error: result});
 
         } else {

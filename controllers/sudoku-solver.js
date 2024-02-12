@@ -1,4 +1,5 @@
 class SudokuSolver {
+
     constructor() {
         let board;
     }
@@ -6,13 +7,12 @@ class SudokuSolver {
 
     validate(puzzleString) {
 
+
         if(!puzzleString) {
-            console.log("validate sees puzzleString as..... ", puzzleString);
-            return "Required field missing";
+            return "Required field(s) missing";
         }
 
         if(puzzleString.length != 81) {
-            console.log("length of puzzleString is ..........", puzzleString.length);
             return "Expected puzzle to be 81 characters long";
         }
 
